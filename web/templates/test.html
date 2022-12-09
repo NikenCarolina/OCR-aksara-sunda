@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<title>Aksara Sunda</title>
+
+<link href='https://fonts.googleapis.com/css?family=Alfa Slab One' rel='stylesheet'>
+<style>
+    body {
+        /* position:absolute; */
+        /* background:url("./assets/website_background.png") no-repeat center center fixed;
+		background-size:cover; */
+        
+        background-color: #4285F4;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        font-family: 'Noto Sans';
+    }
+    #heading {
+        text-align: center;
+        font-family: "Alfa Slab One";
+        font-size: 30px;
+        color: #FFFFFF;
+    }
+
+    .p3 {
+      text-align: center;
+      font-family: "Alfa Slab One";
+      color: #ff5722;
+
+      /* , "Courier New", monospace; */
+    }
+    
+    #container {
+        margin: 0px auto;
+        width: auto;
+        height: auto;
+        /* border: 10px #FF5722 solid;
+        border-radius: 5px;
+        padding: 10px; */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #videoElement {
+        align-items: center;
+        width: 400px;
+        height: 400px;
+        background-color: #666;
+    }
+    
+    #Progress_Status {
+      margin: 0px auto;
+      width: 200px;
+      background-color: #ddd;
+    }
+      
+    #myprogressBar {
+      width: 50%;
+      height: 35px;
+      background-color: #00b947;
+      text-align: center;
+      line-height: 32px;
+      color: black;
+    }
+    
+    #alphabet {
+      text-align: center;
+    }
+
+    button {
+    background-color: #454857;
+    border-radius: 4px;
+    border-style: none;
+    box-sizing: border-box;
+    background: #454857;
+    color: #bdbdbdbd;
+    /* color: #ff5722; */
+    cursor: pointer;
+    display: block;
+    font-family: "Alfa Slab One";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 150%;
+    margin: 0;
+    max-width: 300px;
+    min-height: 44px;
+    min-width: 10px;
+    outline: none;
+    overflow: hidden;
+    padding: 9px 20px 8px;
+    position: relative;
+    text-align: center;
+    text-transform: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    /* width: 100%; */
+    width: 100%;
+    /* display: none; */
+    }
+
+    button:hover,
+    button:focus {
+        background-color: #ff5722;
+
+        /* background-image: linear-gradient(180deg, #ff5722, #4285f4); */
+        color: #fff;
+        /* box-shadow: 0 1px 1px #fff; */
+        
+        box-shadow: 0 1px 1px #0000002e;
+        text-shadow: 0 1px 0px #79485f7a;
+    }
+
+    #footer {
+        clear: both;
+        position: relative;
+        font-family: 'Noto Sans';
+        font-weight: 800;
+        font-size: 15px;
+        border-radius: 10px;
+        height: 20%;
+        width: 30%;
+        margin: auto;
+        padding: 5px;
+        border: 2px solid #fff;
+        background-color: #fff;
+    }
+
+</style>
+</head>
+<body>
+    <div id="heading">
+        Pengenalan Aksara Angka Sunda
+    </div>
+    <br>
+    <div id="heading">
+        <form id = "Iterations">
+            <label for="Dilate">Dilate Iterations:</label><br>
+            <input type="text" id="Dilate" name="Dilate"><br>
+            <label for="Erode">Erode Iterations:</label><br>
+            <input type="text" id="Erode" name="Erode"><br>
+            <label for="Alpha">Alpha (1.0-3.0):</label><br>
+            <input type="text" id="Alpha" name="Alpha"><br>
+            <label for="Beta">Beta (0-100):</label><br>
+            <input type="text" id="Beta" name="Beta">
+        </form>
+    </div>
+    
+    <div id="container">
+        <div>
+            <div id="heading">Camera</div>
+            <div style="display: flex; flex-direction: row;">
+                <div>
+                    <video autoplay="true" id="videoElement"></video>
+                    <canvas hidden id="imageContainer" width="400" height="400" ></canvas>
+                    <button id="take-picture">Take picture</button>
+                </div>
+                <div>
+                    <canvas id="Camera" width="400" height="400" ></canvas>
+                    <button id="click-photo">Predict</button>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div id="heading">Image Processing</div>
+            <div style="display: flex; flex-direction: row;">
+                <div style = "width:400px; height:400px">
+                    <img id="imageDilate" src="">
+                </div>
+                <div style = "width:400px; height:400px">
+                    <img id="imageBoundary" src="">
+                </div>
+                <div style = "width:400px; height:400px">
+                    <img id="imageResult" src="">
+                </div>
+            </div>
+            <!-- <canvas id="imageResult" width="300" height="300" ></canvas> -->
+        </div>
+        <!-- <div>
+            <img src="{{url_for('static', filename='aksara-sunda.jpg')}}" style="max-height: 400px;">
+        </div> -->
+    </div>
+    <br>
+    <br>
+
+    <div id="footer" align="center">
+        Faishal Zarfan (18119002)<br>
+        Niken Dwi Carolina Putri (18119006)<br>
+        Tugas Besar ET4047 "Inteligensi Buatan & Analisis Big-Data untuk Telekomunikasi"<br>
+        Semester Ganjil 2022/2023
+    </div>
+    </body>
+    <script>
+        const video = document.querySelector("#videoElement");
+        const canvas = document.getElementById("imageContainer");
+        const camera = document.getElementById("Camera");
+
+        const result = document.getElementById("imageResult");
+        const boundary = document.getElementById("imageBoundary");
+        const dlt = document.getElementById("imageDilate");
+
+        // const resultContext = result.getContext("2d");
+        const contextCamera = camera.getContext("2d");
+        const context = canvas.getContext("2d");
+        const take_picture = document.getElementById("take-picture");
+        const click_button = document.querySelector("#click-photo");
+        var  dilateIteration = document.getElementById("Dilate");
+        var  erodeIteration = document.getElementById("Erode");
+        var  alpha = document.getElementById("Alpha");
+        var  beta = document.getElementById("Beta");
+        
+
+        var bar = document.getElementById("myprogressBar");
+
+
+        function loadNewDecimal(){
+            // context.drawImage(video, 0,0, 400,400);
+            
+            $.post("http://127.0.0.1:8080/api",
+                {
+                    // label: "Video Capture",
+                    content: camera.toDataURL("image/jpeg",0.8),
+                    dilateIteration: dilateIteration.value,
+                    erodeIteration: erodeIteration.value,
+                    alpha: alpha.value,
+                    beta: beta.value
+
+                },
+                function(data,status){
+                    // alphabet.innerHTML = data.class;
+                    var source_result = "data:image/jpg;base64,";
+                    var source_boundary = "data:image/jpg;base64,";
+                    var source_dlt = "data:image/jpg;base64,";
+
+                    source_result += data.img;
+                    source_boundary += data.bnd;
+                    source_dlt += data.dlt;
+
+                    // var image = new Image();
+                    result.src = source_result;
+                    boundary.src = source_boundary;
+                    dlt.src = source_dlt; 
+
+                    // document.body.appendChild(image);
+
+                    // resultContext.drawImage(image, 0,0, 300,300);
+                    // bar.style.cssText = 'width: '+data.probability+'; height: 30px; background-color: #eca816;';
+                }
+            )
+        };
+
+        click_button.addEventListener('click', function() {
+           	loadNewDecimal()
+            // console.log(iteration.value)
+
+        });
+        take_picture.addEventListener('click', function() {
+            console.log('take_picture')
+            contextCamera.drawImage(video, 0,0, 400,400);
+
+        });
+
+        window.onload = function () {
+
+            //Get camera video
+            navigator.mediaDevices.getUserMedia({video: {width: 400, height: 400}, audio: false})
+            .then(stream => {
+                video.srcObject = stream;
+                
+            })
+            .catch(err => {
+                console.log('navigator.getUserMedia error: ', err)
+            });
+        };
+
+    </script>
+</html>
